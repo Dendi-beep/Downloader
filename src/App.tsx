@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Youtube, Music, GitBranch as BrandTiktok, Download, Link2, AlertCircle, Heart, MessageCircle, Share2, Play, Loader } from 'lucide-react';
+import { GitBranch as BrandTiktok, Loader } from 'lucide-react';
 
 interface VideoDetails {
   author: {
@@ -18,7 +18,6 @@ interface VideoDetails {
 
 function App() {
   const [url, setUrl] = useState('');
-  const [format, setFormat] = useState('mp4');
   const [platform, setPlatform] = useState('tiktok');
   const [downloadLink, setDownloadLink] = useState('');
   const [error, setError] = useState('');
@@ -66,16 +65,6 @@ function App() {
     } else {
       setError('Download link is invalid.');
     }
-  };
-
-  const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      return (num / 1000000).toFixed(1) + 'M';
-    }
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'K';
-    }
-    return num.toString();
   };
 
   return (
@@ -130,13 +119,11 @@ function App() {
                 <h2 className="text-2xl font-semibold">{videoDetails.author.nickname}</h2>
                 <p className="text-lg">{videoDetails.desc}</p>
                 <div className="relative mt-4">
-                <video
-  className="w-[210px] mx-auto rounded-xl object-contain" // Lebar video dibatasi menjadi 320px
-  controls
-  src={downloadLink}
-  type="video/mp4"
-/>
-
+                  <video
+                    className="w-[210px] mx-auto rounded-xl object-contain"
+                    controls
+                    src={downloadLink}
+                  />
                 </div>
                 <button
                   onClick={handleDownload}
