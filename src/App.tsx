@@ -55,6 +55,7 @@ function App() {
       }
 
       const data = await response.json();
+      console.log("DATA RESULT:", data.result);
 
       if (data?.status === 200 && data?.result) {
         const videoData = data.result as VideoDetails;
