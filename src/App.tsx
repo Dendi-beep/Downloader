@@ -8,15 +8,14 @@ interface VideoDetails {
   };
   desc: string;
   statistics: {
-    likeCount: number;
-    commentCount: number;
-    shareCount: number;
-    playCount: number;
+    likeCount: string;
+    commentCount: string;
+    shareCount: string;
   };
-  video: {
-    noWatermark: string;
-  };
+  video: string; // langsung string
+  music: string; // opsional, tergantung kamu mau pakai
 }
+
 
 function App() {
   const [url, setUrl] = useState('');
@@ -46,13 +45,15 @@ function App() {
 
       const data = await response.json();
 
-      if (data?.status === 200 && data?.result?.video?.noWatermark) {
-        setDownloadLink(data.result.video.noWatermark);
+      if (data?.status === 200 && data?.result?.video) {
+
+        setDownloadLink(data.result.video);
         setVideoDetails(data.result);
         setVideoReady(true);
       } else {
-        throw new Error('No download link found.');
+        setError('Invalid TikTok URL or video not found.');
       }
+
     } catch (err) {
       setError('An error occurred while fetching the download link.');
       console.error('Fetch error:', err);
