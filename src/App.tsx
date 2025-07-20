@@ -45,14 +45,15 @@ function App() {
 
       const data = await response.json();
 
-      if (data?.status === 200 && data?.result?.video) {
+     if (data?.status === 200 && data?.result?.video) {
+  setDownloadLink(data.result.video);
+  setVideoDetails(data.result);
+  setVideoReady(true);
+} else {
+  setError('Invalid or unsupported TikTok link.');
+  console.log('Unexpected API result:', data);
+}
 
-        setDownloadLink(data.result.video);
-        setVideoDetails(data.result);
-        setVideoReady(true);
-      } else {
-        setError('Invalid TikTok URL or video not found.');
-      }
 
     } catch (err) {
       setError('An error occurred while fetching the download link.');
