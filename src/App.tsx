@@ -2,27 +2,39 @@ import React, { useState } from 'react';
 import { GitBranch as BrandTiktok, Loader } from 'lucide-react';
 
 interface VideoDetails {
-  author: {
-    nickname: string;
-    avatar: string;
-  };
-  desc: string;
-  statistics: {
+  id: number;
+  title: string;
+  stats: {
     likeCount: number;
     commentCount: number;
     shareCount: number;
-    playCount: number;
+    playCount: string | number;
+    saveCount?: number;
   };
-  video: string;
+  video: {
+    noWatermark: string;
+    cover: string;
+    width: number;
+    height: number;
+    durationFormatted: string;
+    duration: number;
+    ratio: string;
+  };
+  author: {
+    id: string;
+    name: string;
+    unique_id: string;
+    signature?: string;
+    avatar: string;
+  };
 }
 
 function App() {
   const [url, setUrl] = useState('');
-  const [platform, setPlatform] = useState('tiktok');
   const [downloadLink, setDownloadLink] = useState('');
-  const [error, setError] = useState('');
   const [videoDetails, setVideoDetails] = useState<VideoDetails | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const [videoReady, setVideoReady] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,16 +56,17 @@ function App() {
 
       const data = await response.json();
 
-      if (data?.status === 200 && data?.result?.video) {
-        setDownloadLink(data.result.video);
-        setVideoDetails(data.result);
+      if (data?.status === 200 && data?.result) {
+        const videoData = data.result as VideoDetails;
+        setVideoDetails(videoData);
+        setDownloadLink(videoData.video.noWatermark);
         setVideoReady(true);
       } else {
         throw new Error('No download link found.');
       }
     } catch (err) {
       setError('An error occurred while fetching the download link.');
-      console.error('Fetch error:', err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -61,7 +74,7 @@ function App() {
 
   const handleDownload = () => {
     if (downloadLink) {
-      window.location.href = downloadLink; // This will download the video
+      window.location.href = downloadLink;
     } else {
       setError('Download link is invalid.');
     }
@@ -79,24 +92,8 @@ function App() {
             <p className="text-gray-300 text-lg">Download your favorite TikTok videos in high quality</p>
           </div>
 
-          {/* Main Card */}
+          {/* Input Form */}
           <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 mb-8 shadow-xl">
-            {/* Platform Selection */}
-            <div className="flex gap-4 justify-center mb-8">
-              <button
-                onClick={() => setPlatform('tiktok')}
-                className={`flex items-center gap-2 px-8 py-4 rounded-xl transition transform hover:scale-105 ${
-                  platform === 'tiktok'
-                    ? 'bg-gradient-to-r from-pink-500 to-cyan-500 text-white shadow-lg'
-                    : 'bg-white/5 hover:bg-white/20'
-                }`}
-              >
-                <BrandTiktok size={24} />
-                TikTok
-              </button>
-            </div>
-
-            {/* URL Input Form */}
             <form onSubmit={handleSubmit} className="flex flex-col items-center">
               <input
                 type="text"
@@ -108,22 +105,29 @@ function App() {
               <button
                 type="submit"
                 className="px-6 py-2 bg-pink-500 text-white rounded-xl hover:bg-pink-700 transition-colors"
+                disabled={loading}
               >
                 {loading ? <Loader size={16} className="animate-spin" /> : 'Get Video'}
               </button>
             </form>
 
-            {/* Video Display */}
+            {/* Video Detail Display */}
             {videoReady && videoDetails && (
               <div className="mt-8">
-                <h2 className="text-2xl font-semibold">{videoDetails.author.nickname}</h2>
-                <p className="text-lg">{videoDetails.desc}</p>
-                <div className="relative mt-4">
-                  <video
-                    className="w-[210px] mx-auto rounded-xl object-contain"
-                    controls
-                    src={downloadLink}
-                  />
+                <h2 className="text-2xl font-semibold">{videoDetails.author.name} (@{videoDetails.author.unique_id})</h2>
+                {videoDetails.author.signature && <p className="italic text-sm mb-2">{videoDetails.author.signature}</p>}
+                <p className="text-lg mb-4">{videoDetails.title}</p>
+                <video
+                  className="w-[210px] mx-auto rounded-xl object-contain"
+                  controls
+                  src={downloadLink}
+                />
+                <div className="flex justify-center gap-6 mt-4 text-sm text-gray-300">
+                  <span>❤️ {videoDetails.stats.likeCount}</span>
+                  <span>💬 {videoDetails.stats.commentCount}</span>
+                  <span>🔁 {videoDetails.stats.shareCount}</span>
+                  <span>▶️ {videoDetails.stats.playCount}</span>
+                  <span>💾 {videoDetails.stats.saveCount ?? '-'}</span>
                 </div>
                 <button
                   onClick={handleDownload}
@@ -134,7 +138,7 @@ function App() {
               </div>
             )}
 
-            {/* Error Message */}
+            {/* Error */}
             {error && <p className="text-red-500 mt-4">{error}</p>}
           </div>
         </div>
