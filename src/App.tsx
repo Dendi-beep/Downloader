@@ -46,13 +46,15 @@ function App() {
       const data = await response.json();
 
      if (data?.status === 200 && data?.result?.video) {
-  setDownloadLink(data.result.video);
-  setVideoDetails(data.result);
-  setVideoReady(true);
-} else {
-  setError('Invalid or unsupported TikTok link.');
-  console.log('Unexpected API result:', data);
-}
+
+
+      setDownloadLink(data.result.video);
+      setVideoDetails(data.result);
+      setVideoReady(true);
+    } else {
+      setError('Invalid or unsupported TikTok link.');
+      console.log('Unexpected API result:', data);
+    }
 
 
     } catch (err) {
