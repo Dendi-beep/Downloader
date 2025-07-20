@@ -13,7 +13,9 @@ interface VideoDetails {
     shareCount: number;
     playCount: number;
   };
-  video: string;
+  video: {
+    noWatermark: string;
+  };
 }
 
 function App() {
@@ -44,8 +46,8 @@ function App() {
 
       const data = await response.json();
 
-      if (data?.status === 200 && data?.result?.video) {
-        setDownloadLink(data.result.video);
+      if (data?.status === 200 && data?.result?.video?.noWatermark) {
+        setDownloadLink(data.result.video.noWatermark);
         setVideoDetails(data.result);
         setVideoReady(true);
       } else {
@@ -61,7 +63,7 @@ function App() {
 
   const handleDownload = () => {
     if (downloadLink) {
-      window.location.href = downloadLink; // This will download the video
+      window.location.href = downloadLink;
     } else {
       setError('Download link is invalid.');
     }
@@ -85,11 +87,11 @@ function App() {
             <div className="flex gap-4 justify-center mb-8">
               <button
                 onClick={() => setPlatform('tiktok')}
-                className={flex items-center gap-2 px-8 py-4 rounded-xl transition transform hover:scale-105 ${
+                className={`flex items-center gap-2 px-8 py-4 rounded-xl transition transform hover:scale-105 ${
                   platform === 'tiktok'
                     ? 'bg-gradient-to-r from-pink-500 to-cyan-500 text-white shadow-lg'
                     : 'bg-white/5 hover:bg-white/20'
-                }}
+                }`}
               >
                 <BrandTiktok size={24} />
                 TikTok
