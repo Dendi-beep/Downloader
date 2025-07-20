@@ -33,7 +33,7 @@ function App() {
     setDownloadLink('');
     setVideoReady(false);
 
-    const apiUrl = `https://api.tiklydown.eu.org/api/download/v3?url=${encodeURIComponent(url)}`;
+    const apiUrl = `https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(url)}`;
 
     try {
       const response = await fetch(apiUrl);
