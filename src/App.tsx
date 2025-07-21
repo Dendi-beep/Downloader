@@ -98,18 +98,30 @@ function App() {
   }
 };
 
- const handleDownload = () => {
-    if (downloadLink) {
+ const handleDownload = async () => {
+  if (!downloadLink) {
+    setError('Download link is invalid.');
+    return;
+  }
+
+  try {
+    const response = await fetch(downloadLink);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    
     const a = document.createElement('a');
-    a.href = downloadLink;
-    a.download = 'tiktok-video.mp4';
+    a.href = url;
+    a.download = `tiktok-${videoDetails?.id || Date.now()}.mp4`;
     document.body.appendChild(a);
     a.click();
+    
+    // Cleanup
+    window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
-  } else {
-    setError('Download link is invalid.');
+  } catch (err) {
+    setError('Failed to download video. Please try again.');
+    console.error('Download error:', err);
   }
- 
 };
 
 
