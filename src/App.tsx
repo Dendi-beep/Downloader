@@ -214,22 +214,24 @@ function App() {
               </p>
 
               {/* Video Container with responsive sizing */}
-              <div className="relative group">
-                <video
-                  className="w-full max-w-md mx-auto rounded-xl object-cover shadow-lg group-hover:ring-2 group-hover:ring-pink-500 transition-all duration-300"
-                  controls
-                  src={downloadLink}
-                  poster={videoDetails.video.cover}
-                />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="bg-black/50 rounded-full p-3">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
+             {/* Video Container */}
+  <div className="relative group">
+    <video
+      key={downloadLink} // Tambahkan key untuk force re-render
+      className="w-full max-w-md mx-auto rounded-xl object-cover shadow-lg group-hover:ring-2 group-hover:ring-pink-500 transition-all duration-300"
+      controls
+      controlsList="nodownload" // Optional: sembunyikan tombol download browser
+      preload="metadata" // Preload metadata untuk performa lebih baik
+    >
+      <source src={downloadLink} type="video/mp4" />
+      Browser Anda tidak mendukung tag video.
+    </video>
+    {!downloadLink && (
+      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+        <p className="text-white">Video tidak dapat dimuat</p>
+      </div>
+    )}
+  </div>
 
               {/* Stats with better visual hierarchy */}
               <div className="grid grid-cols-5 gap-2 mt-6 text-center">
