@@ -98,13 +98,20 @@ function App() {
   }
 };
 
-  const handleDownload = () => {
+ const handleDownload = () => {
     if (downloadLink) {
-      window.open(downloadLink, '_blank');
-    } else {
-      setError('Download link is invalid.');
-    }
-  };
+    const a = document.createElement('a');
+    a.href = downloadLink;
+    a.download = 'tiktok-video.mp4';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } else {
+    setError('Download link is invalid.');
+  }
+ 
+};
+
 
  return (
   <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black text-white">
